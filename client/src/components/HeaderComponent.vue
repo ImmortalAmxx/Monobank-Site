@@ -1,47 +1,53 @@
 <template>
-  <div class="nav">
-    <nav class="nav-menu">
-      <button class="nav-button">Головна</button>
-      <button class="nav-button">Про нас</button>
-      <button class="nav-button">Послуги</button>
-      <button class="nav-button">Контакти</button>
-    </nav>
+  <div class="container">
+    <div class="navigation">
+      <div class="navigation__logo">
+        <img src="../assets//img/monobank-svgrepo.svg" alt="Monobank Logo">
+      </div>
+      <nav class="navigation__menu">
+        <a href="#" class="navigation__link">Головна</a>
+        <a href="#account__details" class="navigation__link">Інформація по картках</a>
+        <a href="#" class="navigation__link">Активні банки (збіри)</a>
+        <a href="#" class="navigation__link">Контакти</a>
+      </nav>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'MainPage'
+  name: 'HeaderComponent',
 }
 </script>
 
-<style scoped>
-.nav {
-  background: #f3f3f3;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
+<style lang="scss" scoped>
+.navigation {
+  @include flexed($justify-content: space-between, $align-items: center);
+
   margin: 0;
   border-radius: 30px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.nav-menu {
-  display: flex;
+.navigation__logo {
+  @include flexed();
+  width: 64px;
+  height: 64px;
+}
+
+.navigation__menu {
+  @include flexed($justify-content: flex-end, $align-items: center);
   gap: 10px;
   padding: 15px;
 }
 
-.nav-button {
-  color: grey;
-  border: none;
+.navigation__link {
+  @include format-text($color: $gray-soft-color, $text-decoration: none, $text-transform: uppercase);
+  color: $gray-soft-color;
   padding: 10px 5px;
-  border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.nav-button:hover {
-  color: lightblue;
+.navigation__link:hover {
+  color: $neutral-light-color;
 }
 </style>

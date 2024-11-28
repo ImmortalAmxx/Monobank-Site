@@ -1,24 +1,32 @@
 <template>
-  <HeaderComponent />
-  <FooterComponent />
+  <header>
+    <HeaderComponent />
+    <InfoComponent />
+  </header>
+  <main>
+    <ClientDataComponent />
+  </main>
 </template>
 
 <script>
 import HeaderComponent from './components/HeaderComponent.vue'
-import FooterComponent from './components/FooterComponent.vue'
+import InfoComponent from './components/InfoComponent.vue';
+import ClientDataComponent from './components/ClientDataComponent.vue'
 
 export default {
   name: 'App',
   components: {
     HeaderComponent,
-    FooterComponent
+    InfoComponent,
+    ClientDataComponent
   }
 }
 </script>
 
-<style>
-  body {
-    background-image: linear-gradient(242deg, #d99c9d, #8677d9 51%, #6072cc);
-    background-size: cover;
-  }
+<style lang="scss">
+header {
+  background-image: url('./assets/img/background.jpg');
+  background-size: cover;
+  font-family: $font-family;
+}
 </style>
