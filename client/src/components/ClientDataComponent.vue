@@ -2,24 +2,24 @@
   <div class="account">
     <div class="container" id="account__details">
       <div class="account__info">
-        <p>Користувач: {{ name }}</p>
         <p>Список активних карток</p>
       </div>
       <div class="accont__details" v-if="accounts.length > 0">
         <div class="row">
-          <div class="col-4" v-for="(account, index) in accounts" :key="index">
-            <div class="card" style="width: 18rem;">
-              <img src="../assets/img/cards/white.png" class="card-img-top" alt="...">
-              <div class="card-body">
-                <h5 class="card-title">Карта: {{ getCardType(account.type) }}</h5>
+          <div class="col-md-6 col-sm-6 col-xl-3 text-center" v-for="(account, index) in accounts" :key="index">
+            <div class="account__card_table">
+              <div class="card__type py-3">
+                <h2>{{ getCardType(account.type) }}</h2>
               </div>
-              <ul class="list-group list-group-flush">
-                <li class="list-group-item">Номер карти: {{ account.maskedPan[0] }}</li>
-                <li class="list-group-item">Баланс: {{ formatNumber(account.balance) }} {{
-                  getStringByNumber(account.currencyCode) }}</li>
-                <li class="list-group-item">Кредитний ліміт: {{ formatNumber(account.creditLimit) }} {{
-                  getStringByNumber(account.currencyCode) }}</li>
-              </ul>
+              <div class="card__number py-4">
+                <h2>Номер: {{ account.maskedPan[0] }}</h2>
+              </div>
+              <div class="description pt-2 pb-2">
+                <p>Баланс: {{ formatNumber(account.balance) }} {{
+                  getStringByNumber(account.currencyCode) }}</p>
+                <p>Кредитний ліміт: {{ formatNumber(account.creditLimit) }} {{
+                  getStringByNumber(account.currencyCode) }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -30,22 +30,6 @@
       <div v-if="error" class="error">
         <p>Error: {{ error }}</p>
       </div>
-      <!-- <div class="card__test">
-      <div class="main-content">
-        <div class="header">
-          <span>Article on</span>
-          <span>29-June-2023</span>
-        </div>
-        <p class="heading">Different ways to use CSS in React</p>
-        <div class="categories">
-          <span>React</span>
-          <span>Css</span>
-        </div>
-      </div>
-      <div class="footer">
-        by Harsh Gupta
-      </div>
-    </div> -->
     </div>
   </div>
 </template>
@@ -57,7 +41,6 @@ export default {
   data() {
     return {
       accounts: [],
-      name: '',
       error: null,
     };
   },
@@ -69,9 +52,8 @@ export default {
       try {
         const response = await axios.get('http://localhost:5000/api/monobank-client-info');
         this.accounts = response.data.accounts;
-        this.name = response.data.name;
       } catch (err) {
-        this.error = 'Error fetching client information: ' + err.message;
+        this.error = 'Неможливо дістати інформацію. Помилка: ' + err.message;
       }
     },
     getStringByNumber(number) {
@@ -95,7 +77,7 @@ export default {
         black: 'Темна',
         white: 'Біла',
       };
-      return types[type] || 'єПідтримка';
+      return types[type] || 'є-Підтримка';
     },
   },
 };
@@ -103,20 +85,51 @@ export default {
 
 <style lang="scss">
 .account {
-  background-color: #eee2dc;
+  margin-bottom: 50px;
 
   .container {
-    .accont__details {
-      border-radius: 32px;
-      @include format-text(22px, black);
-    }
-
     .account__info {
       margin-top: 50px;
 
       p {
-        @include format-text(22px, black, none);
+        @include format-text(22px, black, none, uppercase);
         text-align: center;
+      }
+    }
+
+    .accont__details {
+      @include format-text(22px, black);
+
+      .row .account__card_table {
+        border: 1px solid rgb(210 206 206);
+        padding: 0;
+
+        .card__type {
+          border-bottom: 1px solid rgb(210 206 206);
+
+          h2 {
+            font-size: 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: .4s all ease-in-out;
+          }
+        }
+
+        .card__number {
+          border-bottom: 1px solid rgb(210 206 206);
+          transition: .4s all ease-in-out;
+
+          h2 {
+            font-size: 20px;
+            margin-bottom: 0;
+            font-weight: 600;
+          }
+        }
+
+        .description p {
+          margin-bottom: 0;
+          font-size: 14px;
+        }
       }
     }
   }

@@ -38,6 +38,24 @@ app.get('/api/monobank-client-info', async (req, res) => {
   }
 });
 
+app.get('/api/monobank-currency', async (req, res) => {
+  try {
+    const response = await axios.get('https://api.monobank.ua/bank/currency', {
+      headers: {
+        'X-Token': apiToken,
+      },
+    });
+    
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching currency info from Monobank:', error);
+    res.status(500).json({
+      message: 'Не вдалося отримати інформацію з Monobank.',
+      error: error.message
+    });
+  }
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
