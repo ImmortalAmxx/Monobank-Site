@@ -7,3 +7,15 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.information-black {
+  p {
+    @include format-text($font-base-size, $dark-gray-color, none, uppercase);
+  }
+}
+
+.information-white {
+  p {
+    @include format-text($font-base-size, $white-color, none, uppercase);
+  }
+}

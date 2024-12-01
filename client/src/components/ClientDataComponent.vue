@@ -1,12 +1,12 @@
 <template>
-  <div class="account py-4" id="account__details">
-    <div class="container">
+  <div class="account py-4">
+    <div class="container" id="accounts">
       <div class="account__header">
         <p>Список активних карток</p>
       </div>
       <div class="account__content" v-if="accounts.length > 0">
-        <div class="row">
-          <div class="col-md-6 col-sm-6 col-xl-3 text-center" v-for="(account, index) in accounts" :key="index">
+        <swiper :slidesPerView="4" :spaceBetween="20" class="mySwiper">
+          <swiper-slide v-for="(account, index) in accounts" :key="index">
             <div class="account__card">
               <div class="account__card-image py-3">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 180">
@@ -22,29 +22,29 @@
                   <text x="63" y="82" font-size="16" fill="#222222" font-weight="bold">{{ account.maskedPan[0] }}</text>
                   <text x="20" y="125" font-size="14" fill="#222222">Баланс: </text>
                   <text x="20" y="140" font-size="14" fill="#222222" font-weight="bold">
-                    {{ formatNumber(account.balance) }} {{ getStringByNumber(account.currencyCode) }}
+                    {{ formatNumber(account.balance) }} {{ getCurrencyName(account.currencyCode) }}
                   </text>
                   <text x="170" y="125" font-size="14" fill="#222222">Кредитний ліміт:</text>
                   <text x="170" y="140" font-size="14" fill="#222222" font-weight="bold">
-                    {{ formatNumber(account.creditLimit) }} {{ getStringByNumber(account.currencyCode) }}
+                    {{ formatNumber(account.creditLimit) }} {{ getCurrencyName(account.currencyCode) }}
                   </text>
                 </svg>
               </div>
             </div>
-          </div>
-        </div>
+          </swiper-slide>
+        </swiper>
       </div>
-      <div v-else>
+      <div class="information-white" v-else>
         <p>Завантаження даних...</p>
       </div>
-      <div v-if="error" class="error">
+      <div v-if="error" class="information-white">
         <p>Error: {{ error }}</p>
       </div>
     </div>
   </div>
   <div class="jars py-4">
     <div class="container">
-      <div class="jars__header" id="jars__details">
+      <div class="jars__header" id="jars">
         <p>Список активних банок</p>
       </div>
       <div class="jars__content" v-if="jars.length > 0">
@@ -59,40 +59,64 @@
                 <h2 v-else>Описа банки: Відсутній</h2>
               </div>
               <div class="jars__card-footer pt-2 pb-2">
-                <p>Баланс: {{ formatNumber(jar.balance) }} {{ getStringByNumber(jar.currencyCode) }}</p>
+                <p>Баланс: {{ formatNumber(jar.balance) }} {{ getCurrencyName(jar.currencyCode) }}</p>
                 <p v-if="jar.goal != null">
-                  Потрібно: {{ formatNumber(jar.goal) }} {{ getStringByNumber(jar.currencyCode) }}
+                  Потрібно: {{ formatNumber(jar.goal) }} {{ getCurrencyName(jar.currencyCode) }}
                 </p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div v-else>
-        <p>Завантаження даних...</p>
+      <div class="information-black" v-else>
+        <p class="information-black">Завантаження даних...</p>
       </div>
-      <div v-if="error" class="error">
+      <div v-if="error" class="information-black">
         <p>Error: {{ error }}</p>
       </div>
     </div>
   </div>
-  <div class="statement py-4">
-    <div class="container">
-      <div class="statement__header">
-        <p>
-          Виписка по картках
-        </p>
+  <div class="statement py-4" v-if="accounts.length > 0">
+    <div class="container" id="statement">
+      <div class="statement-form">
+        <div class="statement__header">
+          <p>
+            Виписка по картках
+          </p>
+        </div>
+        <form @submit.prevent="getCardsInfo(selectedCardId)">
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="statement-form__dropdown dropdown">
+                <button class="statement-form__dropdown-toggle btn btn-light dropdown-toggle w-100" type="button"
+                  id="currencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{ getNameCardByType(selectedCard.type) || "Виберіть карту" }}
+                </button>
+                <ul class="currency-exchange__dropdown-menu dropdown-menu">
+                  <li v-for="(account, index) in accounts" :key="index" @click="selectCard(account)"
+                    class="currency-exchange__dropdown-item dropdown-item">
+                    {{ getNameCardByType(account.type) }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-6">
+              <button type="submit" class="btn btn-light w-100">
+                Розрахувати
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <div class="statement-cards">
+      <div class="statement-cards" v-if="statements.length > 0">
         <div class="statement-cards__slider">
-          <swiper :slidesPerView="5" :spaceBetween="20" :pagination="{
-            clickable: true,
-          }" :modules="modules" class="mySwiper">
-            <swiper-slide v-for="(card, index) in cards" :key="index">
+          <swiper :slidesPerView="3" :spaceBetween="20" class="mySwiper">
+            <swiper-slide v-for="(statement, index) in statements" :key="index">
               <div class="card">
-                <h3>{{ card.name }}</h3>
-                <p>{{ card.balance }} UAH</p>
-                <p>Card Number: {{ card.number }}</p>
+                <h3>Транзакція №: {{ index + 1 }}</h3>
+                <p>Опис: {{ statement.description }} UAH</p>
+                <p>Дата: {{ getDate(statement.time) }}</p>
+                <p>Кошти: {{ formatNumber(statement.amount) }} {{ getCurrencyName(statement.currencyCode) }} </p>
               </div>
             </swiper-slide>
           </swiper>
@@ -105,9 +129,7 @@
 <script>
 import axios from 'axios';
 import { Swiper, SwiperSlide } from "swiper/vue";
-import { Pagination } from 'swiper/modules';
 import "swiper/css";
-import 'swiper/css/pagination';
 
 export default {
   components: { Swiper, SwiperSlide },
@@ -115,15 +137,11 @@ export default {
     return {
       accounts: [],
       jars: [],
+      statements: [],
       error: null,
-      cards: [
-        { name: "Card 1", balance: 1000, number: "1234 5678 9101 1121" },
-        { name: "Card 2", balance: 2000, number: "1234 5678 9101 1122" },
-        { name: "Card 3", balance: 3000, number: "1234 5678 9101 1123" },
-        { name: "Card 4", balance: 4000, number: "1234 5678 9101 1124" },
-        { name: "Card 5", balance: 5000, number: "1234 5678 9101 1125" },
-      ],
-      modules: [Pagination],
+      showCards: false,
+      selectedCard: {},
+      selectedCardId: null
     };
   },
   created() {
@@ -139,7 +157,24 @@ export default {
         this.error = 'Неможливо дістати інформацію. Помилка: ' + err.message;
       }
     },
-    getStringByNumber(number) {
+    async getCardsInfo(card) {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/monobank-statement`, {
+          params: {
+            accountId: card,
+            from: Date.now() - (30 * 86400000),
+            to: Date.now()
+          }
+        }
+        );
+
+        this.statements = response.data;
+      } catch (err) {
+        this.error = 'Неможливо дістати інформацію. Помилка: ' + err.message;
+      }
+    },
+    getCurrencyName(number) {
       const strings = {
         980: 'UAH',
         840: 'USD',
@@ -165,6 +200,15 @@ export default {
       }
       return strValue.slice(0, -2) + '.' + strValue.slice(-2);
     },
+    selectCard(card) {
+      this.selectedCard = card;
+      this.selectedCardId = card.id;
+    },
+    getDate(timestamp) {
+      const date = new Date(timestamp * 1000);
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      return date.toLocaleDateString('uk-UA', options);
+    }
   },
 };
 </script>
@@ -248,8 +292,7 @@ export default {
 
   &__header {
     p {
-      @include format-text($font-xlarge-size, $white-color, none, uppercase, bold);
-      text-align: center;
+      @include format-text($font-xlarge-size, $dark-gray-color, none, uppercase, bold, center);
     }
   }
 
@@ -259,16 +302,57 @@ export default {
     margin: auto;
 
     .card {
+      padding: 15px 0;
+
       h3 {
-        margin: 15px;
+        margin-bottom: 15px;
         @include format-text($font-xlarge-size, $dark-gray-color, none, uppercase, bold, center);
       }
 
       p {
         @include format-text($font-base-size, $dark-gray-color, none, uppercase);
-        margin: 5px 10px;
+        margin: 0 10px;
       }
     }
+  }
+
+  &-form {
+    background: $white-color;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 500px;
+  }
+
+  &__dropdown {
+    &-menu {
+      .currency-exchange__dropdown-item {
+        @include flexed($align-items: center);
+
+        i {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+
+  &__submit {
+    background-color: $deep-blue-color;
+    color: $white-color;
+    border: none;
+
+    &:hover {
+      background-color: $dark-blue-color;
+    }
+  }
+
+  .statement-cards {
+    margin-top: 20px;
+  }
+
+  #statement {
+    @include flexed(center, center, wrap);
   }
 }
 </style>

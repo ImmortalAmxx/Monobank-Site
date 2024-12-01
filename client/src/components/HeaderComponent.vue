@@ -6,8 +6,9 @@
       </div>
       <nav class="navigation__menu">
         <a href="#" class="navigation__link">Головна</a>
-        <a href="#account__details" class="navigation__link">Інформація по картках</a>
-        <a href="#jars__details" class="navigation__link">Активні банки (збіри)</a>
+        <a href="#accounts" class="navigation__link">Інформація по картках</a>
+        <a href="#jars" class="navigation__link">Активні банки (збіри)</a>
+        <a href="#statement" class="navigation__link">Виписка по картках</a>
         <a href="#currency" class="navigation__link">Калькулятор валюти</a>
         <a href="#footer" class="navigation__link">Контакти</a>
       </nav>

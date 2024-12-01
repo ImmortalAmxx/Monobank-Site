@@ -168,6 +168,12 @@ export default {
       background-color: $dark-blue-color;
     }
   }
+
+  &__result {
+    h5, h6 {
+      @include format-text($font-large-size, $white-color, none, uppercase);
+    }
+  }
 }
 </style>
 

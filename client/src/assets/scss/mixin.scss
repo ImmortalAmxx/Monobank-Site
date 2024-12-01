@@ -1,4 +1,4 @@
-@mixin flexed($justify-content: null, $align-items: null) {
+@mixin flexed($justify-content: null, $align-items: null, $flex-wrap: null) {
   display: flex;
 
   @if $justify-content !=null {
@@ -7,6 +7,10 @@
 
   @if $align-items !=null {
     align-items: $align-items;
+  }
+
+  @if $flex-wrap !=null {
+    flex-wrap: $flex-wrap;
   }
 }
 
