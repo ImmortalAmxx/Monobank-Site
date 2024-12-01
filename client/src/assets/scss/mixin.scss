@@ -10,7 +10,7 @@
   }
 }
 
-@mixin format-text($font-size: null, $color: null, $text-decoration: null, $text-transform: null, $font-weigth: null) {
+@mixin format-text($font-size: null, $color: null, $text-decoration: null, $text-transform: null, $font-weigth: null, $text-align: null) {
   @if $font-size !=null {
     font-size: $font-size;
   }
@@ -29,5 +29,9 @@
 
   @if $font-weigth !=null {
     font-weight: $font-weigth;
+  }
+
+  @if $text-align !=null {
+    text-align: $text-align;
   }
 }

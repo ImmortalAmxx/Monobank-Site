@@ -41,7 +41,6 @@ export default {
 
     .navigation__link {
       @include format-text($color: $gray-soft-color, $text-decoration: none, $text-transform: uppercase);
-      color: $gray-soft-color;
       padding: 10px 5px;
       cursor: pointer;
     }

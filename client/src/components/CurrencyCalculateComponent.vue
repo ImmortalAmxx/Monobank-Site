@@ -11,8 +11,8 @@
             </div>
             <div class="col-md-4">
               <div class="currency-exchange__dropdown dropdown">
-                <button class="currency-exchange__dropdown-toggle btn btn-outline-secondary dropdown-toggle w-100"
-                  type="button" id="currencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="currency-exchange__dropdown-toggle btn btn-light dropdown-toggle w-100" type="button"
+                  id="currencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                   <i :class="selectedCurrency.icon"></i>
                   {{ selectedCurrency.label || "Виберіть валюту" }}
                 </button>
@@ -26,17 +26,17 @@
               </div>
             </div>
             <div class="col-4">
-              <button type="submit" class="btn btn-block w-100">
+              <button type="submit" class="btn btn-light w-100">
                 Розрахувати
               </button>
             </div>
           </div>
+          <div v-if="resultBuy !== null && resultSell !== null" class="currency-exchange__result mt-3">
+            <h5>Результат:</h5>
+            <h6>Купівля: {{ resultSell.toFixed(2) }}</h6>
+            <h6>Продаж: {{ resultBuy.toFixed(2) }}</h6>
+          </div>
         </form>
-        <div v-if="resultBuy !== null && resultSell !== null" class="currency-exchange__result mt-3">
-          <h5>Результат:</h5>
-          <h6>Купівля: {{ resultSell.toFixed(2) }}</h6>
-          <h6>Продаж: {{ resultBuy.toFixed(2) }}</h6>
-        </div>
       </div>
     </div>
   </div>
@@ -126,7 +126,7 @@ export default {
 
 <style lang="scss" scoped>
 .currency-exchange {
-  background: linear-gradient(0deg, $soft-purple-color, $soft-purple-color);
+  background: $white-color;
   padding: 50px 0;
 
   .container {
@@ -134,55 +134,40 @@ export default {
   }
 
   &__form {
-    background: #fff;
+    background: $dark-gray-color;
     border-radius: 8px;
     padding: 30px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
     width: 100%;
     max-width: 600px;
 
     h4 {
-      text-transform: uppercase;
-      font-size: 1.5rem;
-      font-weight: bold;
-      text-align: center;
+      @include format-text($font-xlarge-size, $white-color, none, uppercase, bold, center);
       margin-bottom: 20px;
     }
+  }
 
-    .btn-block {
-      background: linear-gradient(15deg, $soft-purple-color, $soft-purple-color);
-      color: white;
-    }
+  &__dropdown {
+    &-menu {
+      .currency-exchange__dropdown-item {
+        @include flexed($align-items: center);
 
-    &__input {
-      padding: 15px;
-    }
-
-    &__dropdown {
-      &-toggle {
-        padding: 15px;
-      }
-
-      &-menu {
-        .currency-exchange__dropdown-item {
-          @include flexed($align-items: center);
-
-          i {
-            margin-right: 10px;
-          }
+        i {
+          margin-right: 10px;
         }
       }
     }
+  }
 
-    &__submit {
-      background-color: $deep-blue-color;
-      color: $white-color;
-      border: none;
+  &__submit {
+    background-color: $deep-blue-color;
+    color: $white-color;
+    border: none;
 
-      &:hover {
-        background-color: $dark-blue-color;
-      }
+    &:hover {
+      background-color: $dark-blue-color;
     }
   }
 }
 </style>
+

@@ -1,7 +1,7 @@
 <template>
-  <div class="account py-4">
+  <div class="account py-4" id="account__details">
     <div class="container">
-      <div class="account__header" id="account__details">
+      <div class="account__header">
         <p>Список активних карток</p>
       </div>
       <div class="account__content" v-if="accounts.length > 0">
@@ -12,18 +12,20 @@
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 180">
                   <defs>
                     <pattern id="backgroundPattern" patternUnits="userSpaceOnUse" width="288" height="180">
-                      <image :href="getCardPhoto(account.type)" width="288" height="180"
+                      <image href="https://i.imgur.com/xfU6GaE.png" width="288" height="180"
                         preserveAspectRatio="xMidYMid slice" />
                     </pattern>
                   </defs>
                   <rect width="288" height="180" rx="15" ry="15" fill="url(#backgroundPattern)" />
-                  <text x="63" y="90" font-size="18" fill="white" font-weight="bold">{{ account.maskedPan[0] }}</text>
-                  <text x="20" y="125" font-size="14" fill="white">Баланс: </text>
-                  <text x="20" y="140" font-size="14" fill="white" font-weight="bold">
+                  <text x="63" y="65" font-size="16" fill="#222222" font-weight="bold">{{
+                    getNameCardByType(account.type) }} </text>
+                  <text x="63" y="82" font-size="16" fill="#222222" font-weight="bold">{{ account.maskedPan[0] }}</text>
+                  <text x="20" y="125" font-size="14" fill="#222222">Баланс: </text>
+                  <text x="20" y="140" font-size="14" fill="#222222" font-weight="bold">
                     {{ formatNumber(account.balance) }} {{ getStringByNumber(account.currencyCode) }}
                   </text>
-                  <text x="170" y="125" font-size="14" fill="white">Кредитний ліміт:</text>
-                  <text x="170" y="140" font-size="14" fill="white" font-weight="bold">
+                  <text x="170" y="125" font-size="14" fill="#222222">Кредитний ліміт:</text>
+                  <text x="170" y="140" font-size="14" fill="#222222" font-weight="bold">
                     {{ formatNumber(account.creditLimit) }} {{ getStringByNumber(account.currencyCode) }}
                   </text>
                 </svg>
@@ -74,17 +76,54 @@
       </div>
     </div>
   </div>
+  <div class="statement py-4">
+    <div class="container">
+      <div class="statement__header">
+        <p>
+          Виписка по картках
+        </p>
+      </div>
+      <div class="statement-cards">
+        <div class="statement-cards__slider">
+          <swiper :slidesPerView="5" :spaceBetween="20" :pagination="{
+            clickable: true,
+          }" :modules="modules" class="mySwiper">
+            <swiper-slide v-for="(card, index) in cards" :key="index">
+              <div class="card">
+                <h3>{{ card.name }}</h3>
+                <p>{{ card.balance }} UAH</p>
+                <p>Card Number: {{ card.number }}</p>
+              </div>
+            </swiper-slide>
+          </swiper>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import axios from 'axios';
+import { Swiper, SwiperSlide } from "swiper/vue";
+import { Pagination } from 'swiper/modules';
+import "swiper/css";
+import 'swiper/css/pagination';
 
 export default {
+  components: { Swiper, SwiperSlide },
   data() {
     return {
       accounts: [],
       jars: [],
       error: null,
+      cards: [
+        { name: "Card 1", balance: 1000, number: "1234 5678 9101 1121" },
+        { name: "Card 2", balance: 2000, number: "1234 5678 9101 1122" },
+        { name: "Card 3", balance: 3000, number: "1234 5678 9101 1123" },
+        { name: "Card 4", balance: 4000, number: "1234 5678 9101 1124" },
+        { name: "Card 5", balance: 5000, number: "1234 5678 9101 1125" },
+      ],
+      modules: [Pagination],
     };
   },
   created() {
@@ -109,6 +148,16 @@ export default {
 
       return strings[number];
     },
+    getNameCardByType(type) {
+      const strings = {
+        "black": 'Темна',
+        "white": 'Біла',
+        "eAid": 'єПідтримка',
+        "madeInUkraine": 'Кешбек'
+      };
+
+      return strings[type];
+    },
     formatNumber(value) {
       const strValue = value.toString();
       if (strValue.length <= 2) {
@@ -116,24 +165,17 @@ export default {
       }
       return strValue.slice(0, -2) + '.' + strValue.slice(-2);
     },
-    getCardPhoto(type) {
-      const types = {
-        black: 'https://i.imgur.com/f1jptj7.png',
-        white: 'https://i.imgur.com/a5StyYt.png',
-      };
-      return types[type] || 'https://i.imgur.com/EKXBgdD.png';
-    },
   },
 };
 </script>
 
 <style lang="scss">
 .account {
-  background-color: #ffcc90;
+  background-color: $dark-gray-color;
 
   &__header {
     p {
-      @include format-text($font-xlarge-size, $black-color, none, uppercase);
+      @include format-text($font-xlarge-size, $white-color, none, uppercase, bold);
       text-align: center;
     }
   }
@@ -156,8 +198,7 @@ export default {
 .jars {
   &__header {
     p {
-      @include format-text($font-xlarge-size, $black-color, none, uppercase);
-      text-align: center;
+      @include format-text($font-xlarge-size, $black-color, none, uppercase, bold, center);
     }
   }
 
@@ -201,5 +242,33 @@ export default {
     }
   }
 }
-</style>
 
+.statement {
+  background-color: $dark-gray-color;
+
+  &__header {
+    p {
+      @include format-text($font-xlarge-size, $white-color, none, uppercase, bold);
+      text-align: center;
+    }
+  }
+
+  &-cards__slider {
+    width: 100%;
+    max-width: 1000px;
+    margin: auto;
+
+    .card {
+      h3 {
+        margin: 15px;
+        @include format-text($font-xlarge-size, $dark-gray-color, none, uppercase, bold, center);
+      }
+
+      p {
+        @include format-text($font-base-size, $dark-gray-color, none, uppercase);
+        margin: 5px 10px;
+      }
+    }
+  }
+}
+</style>
