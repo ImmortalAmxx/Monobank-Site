@@ -27,13 +27,42 @@ app.get('/api/monobank-client-info', async (req, res) => {
         'X-Token': apiToken,
       },
     });
-    
+
     res.json(response.data);
   } catch (error) {
     console.error('Error fetching client info from Monobank:', error);
     res.status(500).json({
       message: 'Не вдалося отримати інформацію з Monobank.',
       error: error.message
+    });
+  }
+});
+
+app.get('/api/monobank-statement', async (req, res) => {
+  const { accountId, from, to } = req.query;
+
+  if (!accountId || !from || !to) {
+    return res.status(400).json({
+      message: 'Необхідно вказати accountId, from і to.',
+    });
+  }
+
+  try {
+    const response = await axios.get(
+      `https://api.monobank.ua/personal/statement/${accountId}/${from}/${to}`,
+      {
+        headers: {
+          'X-Token': apiToken,
+        },
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Error fetching statement from Monobank:', error);
+    res.status(500).json({
+      message: 'Не вдалося отримати виписку з Monobank.',
+      error: error.message,
     });
   }
 });

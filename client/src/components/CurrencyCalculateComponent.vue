@@ -2,7 +2,7 @@
   <div class="currency-exchange" id="currency">
     <div class="container">
       <div class="currency-exchange__form">
-        <h1 class="currency-exchange__title">Розрахувати курси гривні до валюту</h1>
+        <h4 class="currency-exchange__title">Розрахувати курси гривні до валюти</h4>
         <form @submit.prevent="calculateCurrency">
           <div class="row g-3">
             <div class="col-md-4">
@@ -26,14 +26,16 @@
               </div>
             </div>
             <div class="col-4">
-              <button type="submit" class="btn btn-primary btn-block w-100">
+              <button type="submit" class="btn btn-block w-100">
                 Розрахувати
               </button>
             </div>
           </div>
         </form>
-        <div v-if="result !== null" class="currency-exchange__result mt-3">
-          <h2>Результат: {{ result.toFixed(2) }}</h2>
+        <div v-if="resultBuy !== null && resultSell !== null" class="currency-exchange__result mt-3">
+          <h5>Результат:</h5>
+          <h6>Купівля: {{ resultSell.toFixed(2) }}</h6>
+          <h6>Продаж: {{ resultBuy.toFixed(2) }}</h6>
         </div>
       </div>
     </div>
@@ -50,7 +52,8 @@ export default {
       selectedCurrency: {},
       currencies: [],
       error: null,
-      result: null
+      resultBuy: null,
+      resultSell: null
     };
   },
   computed: {
@@ -64,14 +67,15 @@ export default {
   methods: {
     async getCurrencyInfo() {
       try {
-        const response = await axios.get(
+        const { data } = await axios.get(
           "http://localhost:5000/api/monobank-currency"
         );
-        this.currencies = this.mapCurrencies(response.data);
+        this.currencies = this.mapCurrencies(data);
       } catch (err) {
         this.error = "Неможливо дістати інформацію. Помилка: " + err.message;
       }
     },
+
     mapCurrencies(data) {
       const currencyMapping = {
         840: { code: "USD", label: "USD - US Dollar", icon: "fas fa-dollar-sign" },
@@ -83,11 +87,16 @@ export default {
           const currency = currencyMapping[item.currencyCodeA];
 
           if (currency) {
-            if(item.rateBuy)
+            if (item.rateBuy)
               currency.rateBuy = item.rateBuy;
 
-            if(item.rateCross)
+            if (item.rateCross) {
               currency.rateBuy = item.rateCross;
+              currency.rateSell = item.rateCross;
+            }
+
+            if (item.rateSell)
+              currency.rateSell = item.rateSell;
           }
 
           return currency;
@@ -99,12 +108,14 @@ export default {
     },
     calculateCurrency() {
       if (!this.amount || !this.selectedCurrency.rateBuy) {
-        this.result = null;
+        this.resultBuy = null;
+        this.resultSell = null;
         alert("Будь ласка, введіть число і виберіть валюту!");
         return;
       }
 
-      this.result = this.amount * this.selectedCurrency.rateBuy;
+      this.resultBuy = this.amount * this.selectedCurrency.rateBuy;
+      this.resultSell = this.amount * this.selectedCurrency.rateSell;
     },
   },
   mounted() {
@@ -115,13 +126,11 @@ export default {
 
 <style lang="scss" scoped>
 .currency-exchange {
-  background-color: #d4d3d2;
+  background: linear-gradient(0deg, $soft-purple-color, $soft-purple-color);
   padding: 50px 0;
 
   .container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    @include flexed(center, center);
   }
 
   &__form {
@@ -132,12 +141,17 @@ export default {
     width: 100%;
     max-width: 600px;
 
-    &__title {
+    h4 {
       text-transform: uppercase;
       font-size: 1.5rem;
       font-weight: bold;
       text-align: center;
       margin-bottom: 20px;
+    }
+
+    .btn-block {
+      background: linear-gradient(15deg, $soft-purple-color, $soft-purple-color);
+      color: white;
     }
 
     &__input {
@@ -151,8 +165,7 @@ export default {
 
       &-menu {
         .currency-exchange__dropdown-item {
-          display: flex;
-          align-items: center;
+          @include flexed($align-items: center);
 
           i {
             margin-right: 10px;
@@ -162,12 +175,12 @@ export default {
     }
 
     &__submit {
-      background-color: #0056b3;
-      color: #fff;
+      background-color: $deep-blue-color;
+      color: $white-color;
       border: none;
 
       &:hover {
-        background-color: #004085;
+        background-color: $dark-blue-color;
       }
     }
   }

@@ -32,40 +32,40 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .container .information {
+.container .information {
   margin-top: 40px;
   @include flexed($justify-content: space-between);
 
-  .information__text {
+  &__text {
     width: 800px;
 
     p {
-      @include format-text(22px, $gray-soft-color);
+      @include format-text($font-xlarge-size, $gray-soft-color);
     }
 
     a {
       @include format-text($color: rgb(57, 235, 134), $text-decoration: none);
     }
+  }
 
-    .information__download {
-      margin-top: 280px;
+  &__download {
+    margin-top: 280px;
 
-      h2 {
-        @include format-text(22px, $white-color);
-      }
+    h2 {
+      @include format-text($font-xlarge-size, $white-color);
+    }
 
-      h4 {
-        @include format-text(22px, $gray-soft-color, $text-transform: uppercase);
-      }
+    h4 {
+      @include format-text($font-xlarge-size, $gray-soft-color, $text-transform: uppercase);
+    }
 
-      img {
-        width: 120px;
-        margin-right: 10px;
-      }
+    img {
+      width: 120px;
+      margin-right: 10px;
     }
   }
 
-  .information__logo {
+  &__logo {
     margin-bottom: 50px;
   }
 }

@@ -32,9 +32,12 @@ export default {
 </script>
 
 <style lang="scss">
+#app {
+  font-family: "Jost", sans-serif;
+}
+
 header {
   background-image: url('./assets/img/background.jpg');
   background-size: cover;
-  font-family: $font-family;
 }
 </style>
