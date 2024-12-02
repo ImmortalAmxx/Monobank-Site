@@ -33,7 +33,7 @@ export default {
 
 <style lang="scss">
 #app {
-  font-family: "Jost", sans-serif;
+  font-family: $font-family;
 }
 
 header {
