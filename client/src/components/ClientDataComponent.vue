@@ -48,19 +48,21 @@
       <div class="jars__content" v-if="jars.length > 0">
         <div class="row">
           <div class="col-md-6 col-sm-6 col-xl-3 text-center" v-for="(jar, index) in jars" :key="index">
-            <div class="jars__card">
-              <div class="jars__card-header py-3">
+            <div class="jars__card px-3 py-4">
+              <div class="jars__card-header">
                 <h2>{{ jar.title }}</h2>
               </div>
-              <div class="jars__card-body py-4">
+              <div class="jars__card-body py-3 mb-0">
                 <h2 v-if="jar.description.length > 0">Описа банки: {{ jar.description }}</h2>
                 <h2 v-else>Описа банки: Відсутній</h2>
               </div>
-              <div class="jars__card-footer pt-2 pb-2">
+              <div class="jars__card-footer pt-2">
                 <p>Баланс: {{ formatNumber(jar.balance) }} {{ getCurrencyName(jar.currencyCode) }}</p>
-                <p v-if="jar.goal != null">
-                  Потрібно: {{ formatNumber(jar.goal) }} {{ getCurrencyName(jar.currencyCode) }}
-                </p>
+                <div v-if="jar.goal != null">
+                  <p>Потрібно: {{ formatNumber(jar.goal) }} {{ getCurrencyName(jar.currencyCode) }}</p>
+                  <p>Залишилось зібрати: {{ formatNumber(jar.goal - jar.balance) }} {{ getCurrencyName(jar.currencyCode)
+                    }}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -73,7 +75,7 @@
   </div>
   <div class="statement py-4" v-if="accounts.length > 0">
     <div class="container" id="statement">
-      <div class="statement-form">
+      <div class="statement-form p-3">
         <div class="statement__header">
           <p>
             Виписка по картках
@@ -90,7 +92,7 @@
                 <ul class="currency-exchange__dropdown-menu dropdown-menu">
                   <li v-for="(account, index) in accounts" :key="index" @click="selectCard(account)"
                     class="currency-exchange__dropdown-item dropdown-item">
-                    {{ getNameCardByType(account.type) }}
+                    {{ getNameCardByType(account.type) }} ({{ getCurrencyName(account.currencyCode) }})
                   </li>
                 </ul>
               </div>
@@ -107,11 +109,11 @@
         <div class="statement-cards__slider">
           <swiper :slidesPerView="3" :spaceBetween="20" class="mySwiper">
             <swiper-slide v-for="(statement, index) in statements" :key="index">
-              <div class="card">
-                <h3>Транзакція №: {{ index + 1 }}</h3>
-                <p>Опис: {{ statement.description }} UAH</p>
-                <p>Дата: {{ getDate(statement.time) }}</p>
-                <p>Кошти: {{ formatNumber(statement.amount) }} {{ getCurrencyName(statement.currencyCode) }} </p>
+              <div class="card p-3">
+                <h3 class="mb-4">Транзакція №: {{ index + 1 }}</h3>
+                <p class="mx-2 my-0">Опис: {{ statement.description }}</p>
+                <p class="mx-2 my-0">Дата: {{ getDate(statement.time) }}</p>
+                <p class="mx-2 my-0">Кошти: {{ formatNumber(statement.amount) }} {{ getCurrencyName(statement.currencyCode) }} </p>
               </div>
             </swiper-slide>
           </swiper>
@@ -147,8 +149,9 @@ export default {
         this.jars = response.data.jars;
       } catch (err) {
         alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
-        await new Promise(resolve => setTimeout(resolve, 500));
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     },
     async getCardsInfo(card) {
@@ -165,13 +168,14 @@ export default {
 
         this.statements = response.data;
 
-        if(this.statements.length < 1) {
+        if (this.statements.length < 1) {
           alert("Виписка по даній картці не знайдена");
         }
       } catch (err) {
         alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
-        await new Promise(resolve => setTimeout(resolve, 500));
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     },
     getCurrencyName(number) {
@@ -263,35 +267,26 @@ export default {
       @include flexed($justify-content: center);
 
       .jars__card {
-        border: 1px solid rgb(210 206 206);
-        padding: 0;
+        background-color: $dark-gray-color;
+        box-shadow: $dark-gray-color 0px 5px 15px;
+        border-radius: 8px;
 
         &-header {
-          border-bottom: 1px solid rgb(210 206 206);
-
           h2 {
-            font-size: $font-large-size;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: 0.4s all ease-in-out;
+            @include format-text($font-large-size, $white-color, none, uppercase, bold);
           }
         }
 
         &-body {
-          border-bottom: 1px solid rgb(210 206 206);
-          transition: 0.4s all ease-in-out;
-
           h2 {
-            font-size: $font-large-size;
-            margin-bottom: 0;
-            font-weight: 600;
+            @include format-text($font-large-size, $white-color);
           }
         }
 
         &-footer {
           p {
             margin-bottom: 0;
-            font-size: $font-base-size;
+            @include format-text($font-base-size, $white-color);
           }
         }
       }
@@ -314,16 +309,12 @@ export default {
     margin: auto;
 
     .card {
-      padding: 15px 0;
-
       h3 {
-        margin-bottom: 15px;
         @include format-text($font-xlarge-size, $dark-gray-color, none, uppercase, bold, center);
       }
 
       p {
         @include format-text($font-base-size, $dark-gray-color, none, uppercase);
-        margin: 0 10px;
       }
     }
   }
@@ -331,8 +322,7 @@ export default {
   &-form {
     background: $white-color;
     border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    box-shadow: $white-color 0px 5px 15px;
     width: 100%;
     max-width: 500px;
   }

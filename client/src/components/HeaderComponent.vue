@@ -5,12 +5,12 @@
         <img src="../assets//img/monobank-svgrepo.svg" alt="Monobank Logo">
       </div>
       <nav class="navigation__menu">
-        <a href="#" class="navigation__link">Головна</a>
-        <a href="#accounts" class="navigation__link">Інформація по картках</a>
-        <a href="#jars" class="navigation__link">Активні банки (збіри)</a>
-        <a href="#statement" class="navigation__link">Виписка по картках</a>
-        <a href="#currency" class="navigation__link">Калькулятор валюти</a>
-        <a href="#footer" class="navigation__link">Контакти</a>
+        <a href="#" class="navigation__link px-1">Головна</a>
+        <a href="#accounts" class="navigation__link px-1">Інформація по картках</a>
+        <a href="#jars" class="navigation__link px-1">Активні банки (збіри)</a>
+        <a href="#statement" class="navigation__link px-1">Виписка по картках</a>
+        <a href="#currency" class="navigation__link px-1">Калькулятор валюти</a>
+        <a href="#footer" class="navigation__link px-1">Контакти</a>
       </nav>
     </div>
   </div>
@@ -29,24 +29,22 @@ export default {
   margin: 0;
   border-radius: 30px;
 
-  .navigation__logo {
+  &__logo {
     @include flexed();
     width: 64px;
     height: 64px;
   }
 
-  .navigation__menu {
+  &__menu {
     @include flexed($justify-content: flex-end, $align-items: center);
     gap: 10px;
-    padding: 15px;
+  }
 
-    .navigation__link {
-      @include format-text($color: $gray-soft-color, $text-decoration: none, $text-transform: uppercase);
-      padding: 10px 5px;
-      cursor: pointer;
-    }
+  &__link {
+    @include format-text($color: $gray-soft-color, $text-decoration: none, $text-transform: uppercase);
+    cursor: pointer;
 
-    .navigation__link:hover {
+    &:hover {
       color: $neutral-light-color;
     }
   }

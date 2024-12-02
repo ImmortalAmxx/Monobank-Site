@@ -1,7 +1,7 @@
 <template>
-  <div class="currency-exchange" id="currency">
+  <div class="currency-exchange p-4" id="currency">
     <div class="container">
-      <div class="currency-exchange__form">
+      <div class="currency-exchange__form p-4">
         <h4 class="currency-exchange__title">Розрахувати курси гривні до валюти</h4>
         <form @submit.prevent="calculateCurrency">
           <div class="row g-3">
@@ -127,7 +127,6 @@ export default {
 <style lang="scss" scoped>
 .currency-exchange {
   background: $white-color;
-  padding: 50px 0;
 
   .container {
     @include flexed(center, center);
@@ -136,8 +135,7 @@ export default {
   &__form {
     background: $dark-gray-color;
     border-radius: 8px;
-    padding: 30px;
-    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+    box-shadow: $dark-gray-color 0px 5px 15px;
     width: 100%;
     max-width: 600px;
 
