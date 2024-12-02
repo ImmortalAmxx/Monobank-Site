@@ -10,12 +10,12 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .information-black {
   p {
-    @include format-text($font-base-size, $dark-gray-color, none, uppercase);
+    @include format-text($font-base-size, $dark-gray-color, none, uppercase, bold, center);
   }
 }
 
 .information-white {
   p {
-    @include format-text($font-base-size, $white-color, none, uppercase);
+    @include format-text($font-base-size, $white-color, none, uppercase, bold, center);
   }
 }

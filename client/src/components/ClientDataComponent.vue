@@ -17,9 +17,10 @@
                     </pattern>
                   </defs>
                   <rect width="288" height="180" rx="15" ry="15" fill="url(#backgroundPattern)" />
-                  <text x="63" y="65" font-size="16" fill="#222222" font-weight="bold">{{
+                  <text x="65" y="65" font-size="16" fill="#222222" font-weight="bold">{{
                     getNameCardByType(account.type) }} </text>
-                  <text x="63" y="82" font-size="16" fill="#222222" font-weight="bold">{{ account.maskedPan[0] }}</text>
+                  <text x="65" y="82" font-size="17" fill="#222222" font-weight="bold">{{
+                    formatCurdNumber(account.maskedPan[0]) }}</text>
                   <text x="20" y="125" font-size="14" fill="#222222">Баланс: </text>
                   <text x="20" y="140" font-size="14" fill="#222222" font-weight="bold">
                     {{ formatNumber(account.balance) }} {{ getCurrencyName(account.currencyCode) }}
@@ -36,9 +37,6 @@
       </div>
       <div class="information-white" v-else>
         <p>Завантаження даних...</p>
-      </div>
-      <div v-if="error" class="information-white">
-        <p>Error: {{ error }}</p>
       </div>
     </div>
   </div>
@@ -71,9 +69,6 @@
       <div class="information-black" v-else>
         <p class="information-black">Завантаження даних...</p>
       </div>
-      <div v-if="error" class="information-black">
-        <p>Error: {{ error }}</p>
-      </div>
     </div>
   </div>
   <div class="statement py-4" v-if="accounts.length > 0">
@@ -84,13 +79,13 @@
             Виписка по картках
           </p>
         </div>
-        <form @submit.prevent="getCardsInfo(selectedCardId)">
+        <form @submit.prevent="getCardsInfo(selectCardData[0].cardId)">
           <div class="row g-3">
             <div class="col-6">
               <div class="statement-form__dropdown dropdown">
                 <button class="statement-form__dropdown-toggle btn btn-light dropdown-toggle w-100" type="button"
                   id="currencyDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                  {{ getNameCardByType(selectedCard.type) || "Виберіть карту" }}
+                  {{ getNameCardByType(selectCardData[0]?.selectId.type) || "Виберіть карту" }}
                 </button>
                 <ul class="currency-exchange__dropdown-menu dropdown-menu">
                   <li v-for="(account, index) in accounts" :key="index" @click="selectCard(account)"
@@ -102,7 +97,7 @@
             </div>
             <div class="col-6">
               <button type="submit" class="btn btn-light w-100">
-                Розрахувати
+                Отримати виписку
               </button>
             </div>
           </div>
@@ -138,10 +133,7 @@ export default {
       accounts: [],
       jars: [],
       statements: [],
-      error: null,
-      showCards: false,
-      selectedCard: {},
-      selectedCardId: null
+      selectCardData: [],
     };
   },
   created() {
@@ -154,7 +146,9 @@ export default {
         this.accounts = response.data.accounts;
         this.jars = response.data.jars;
       } catch (err) {
-        this.error = 'Неможливо дістати інформацію. Помилка: ' + err.message;
+        alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
+        await new Promise(resolve => setTimeout(resolve, 500));
+        window.location.reload();
       }
     },
     async getCardsInfo(card) {
@@ -170,8 +164,14 @@ export default {
         );
 
         this.statements = response.data;
+
+        if(this.statements.length < 1) {
+          alert("Виписка по даній картці не знайдена");
+        }
       } catch (err) {
-        this.error = 'Неможливо дістати інформацію. Помилка: ' + err.message;
+        alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
+        await new Promise(resolve => setTimeout(resolve, 500));
+        window.location.reload();
       }
     },
     getCurrencyName(number) {
@@ -200,9 +200,21 @@ export default {
       }
       return strValue.slice(0, -2) + '.' + strValue.slice(-2);
     },
+
+    formatCurdNumber(value) {
+      for (let i = 0; i < value.length; i++) {
+        if (i % 5 === 0) {
+          value = value.slice(0, i) + ' ' + value.slice(i);
+        }
+      }
+
+      return value;
+    },
     selectCard(card) {
-      this.selectedCard = card;
-      this.selectedCardId = card.id;
+      this.selectCardData = [{
+        selectId: card,
+        cardId: card.id
+      }];
     },
     getDate(timestamp) {
       const date = new Date(timestamp * 1000);
