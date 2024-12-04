@@ -8,6 +8,8 @@
               role="button" data-mdb-ripple-color="dark"><i class="fab fa-x-twitter text-light"></i></a>
             <a class="btn btn-link btn-floating btn-lg m-1" href="https://github.com/ImmortalAmxx" target="_blank"
               role="button" data-mdb-ripple-color="dark"><i class="fab fa-github text-light"></i></a>
+            <a class="btn btn-link btn-floating btn-lg m-1" href="https://t.me/amxxcoder" target="_blank"
+              role="button" data-mdb-ripple-color="dark"><i class="fab fa-telegram text-light"></i></a>
           </section>
         </div>
         <div class="text-center text-light p-3">
