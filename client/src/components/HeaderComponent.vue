@@ -1,19 +1,32 @@
 <template>
-  <div class="container">
-    <div class="navigation">
-      <div class="navigation__logo">
-        <img src="../assets//img/monobank-svgrepo.svg" alt="Monobank Logo">
+  <nav class="navbar navbar-expand-md navbar-light">
+    <div class="container container-fluid">
+      <img src="../assets/img/monobank-svgrepo.svg" alt="">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#accounts">Інформація по картках</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#jars">Активні збіри</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#statement">Виписка по картках</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#currency">Калькулятор валют</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#footer">Контакти</a>
+          </li>
+        </ul>
       </div>
-      <nav class="navigation__menu">
-        <a href="#" class="navigation__link px-1">Головна</a>
-        <a href="#accounts" class="navigation__link px-1">Інформація по картках</a>
-        <a href="#jars" class="navigation__link px-1">Активні банки (збіри)</a>
-        <a href="#statement" class="navigation__link px-1">Виписка по картках</a>
-        <a href="#currency" class="navigation__link px-1">Калькулятор валюти</a>
-        <a href="#footer" class="navigation__link px-1">Контакти</a>
-      </nav>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script>
@@ -23,30 +36,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.container .navigation {
-  @include flexed($justify-content: space-between, $align-items: center);
+img {
+  width: 64px;
+  height: 64px;
+}
 
-  margin: 0;
-  border-radius: 30px;
+.navbar-toggler {
+  color: $gray-soft-color;
+}
 
-  &__logo {
-    @include flexed();
-    width: 64px;
-    height: 64px;
-  }
+.nav-link {
+  @include format-text($font-base-size, $gray-soft-color, none, uppercase);
 
-  &__menu {
-    @include flexed($justify-content: flex-end, $align-items: center);
-    gap: 10px;
-  }
-
-  &__link {
-    @include format-text($color: $gray-soft-color, $text-decoration: none, $text-transform: uppercase);
-    cursor: pointer;
-
-    &:hover {
-      color: $neutral-light-color;
-    }
+  &:hover {
+    color: $neutral-light-color;
   }
 }
 </style>

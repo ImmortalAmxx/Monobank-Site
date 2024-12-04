@@ -57,11 +57,12 @@
                 <h2 v-else>Описа банки: Відсутній</h2>
               </div>
               <div class="jars__card-footer pt-2">
-                <p>Баланс: {{ formatNumber(jar.balance) }} {{ getCurrencyName(jar.currencyCode) }}</p>
+                <p class="mb-0">Баланс: {{ formatNumber(jar.balance) }} {{ getCurrencyName(jar.currencyCode) }}</p>
                 <div v-if="jar.goal != null">
-                  <p>Потрібно: {{ formatNumber(jar.goal) }} {{ getCurrencyName(jar.currencyCode) }}</p>
-                  <p>Залишилось зібрати: {{ formatNumber(jar.goal - jar.balance) }} {{ getCurrencyName(jar.currencyCode)
-                    }}</p>
+                  <p class="mb-0">Потрібно: {{ formatNumber(jar.goal) }} {{ getCurrencyName(jar.currencyCode) }}</p>
+                  <p class="mb-0">Залишилось зібрати: {{ formatNumber(jar.goal - jar.balance) }} {{
+                    getCurrencyName(jar.currencyCode)
+                  }}</p>
                 </div>
               </div>
             </div>
@@ -113,7 +114,8 @@
                 <h3 class="mb-4">Транзакція №: {{ index + 1 }}</h3>
                 <p class="mx-2 my-0">Опис: {{ statement.description }}</p>
                 <p class="mx-2 my-0">Дата: {{ getDate(statement.time) }}</p>
-                <p class="mx-2 my-0">Кошти: {{ formatNumber(statement.amount) }} {{ getCurrencyName(statement.currencyCode) }} </p>
+                <p class="mx-2 my-0">Кошти: {{ formatNumber(statement.amount) }} {{
+                  getCurrencyName(statement.currencyCode) }} </p>
               </div>
             </swiper-slide>
           </swiper>
@@ -271,22 +273,37 @@ export default {
         box-shadow: $dark-gray-color 0px 5px 15px;
         border-radius: 8px;
 
+        @include media-breakpoint-down(sm) {
+          margin-bottom: 15px;
+        }
+
         &-header {
           h2 {
             @include format-text($font-large-size, $white-color, none, uppercase, bold);
+
+            @include media-breakpoint-down(md) {
+              font-size: 16px;
+            }
           }
         }
 
         &-body {
           h2 {
             @include format-text($font-large-size, $white-color);
+
+            @include media-breakpoint-down(md) {
+              font-size: 15px;
+            }
           }
         }
 
         &-footer {
           p {
-            margin-bottom: 0;
             @include format-text($font-base-size, $white-color);
+
+            @include media-breakpoint-down(md) {
+              font-size: 13px;
+            }
           }
         }
       }

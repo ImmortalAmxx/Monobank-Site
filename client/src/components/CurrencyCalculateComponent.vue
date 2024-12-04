@@ -58,7 +58,7 @@ export default {
   },
   computed: {
     filteredCurrencies() {
-      const allowedCurrencies = ["USD", "PLN"];
+      const allowedCurrencies = ["USD", "EUR", "PLN"];
       return this.currencies.filter((currency) =>
         allowedCurrencies.includes(currency.code)
       );
@@ -72,36 +72,40 @@ export default {
         );
         this.currencies = this.mapCurrencies(data);
       } catch (err) {
-        this.error = "Неможливо дістати інформацію. Помилка: " + err.message;
+        alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       }
     },
 
     mapCurrencies(data) {
       const currencyMapping = {
         840: { code: "USD", label: "USD - US Dollar", icon: "fas fa-dollar-sign" },
+        978: { code: "EUR", label: "EUR - Euro", icon: "fas fa-euro-sign" },
         985: { code: "PLN", label: "PLN - Polish Zloty", icon: "fas fa-coins" },
       };
 
+      const processedCurrencies = new Set();
+
       return data
-        .map((item) => {
-          const currency = currencyMapping[item.currencyCodeA];
+        .map((entry) => {
+          if (processedCurrencies.has(entry.currencyCodeA)) {
+            return null;
+          }
+
+          processedCurrencies.add(entry.currencyCodeA);
+
+          const currency = currencyMapping[entry.currencyCodeA];
 
           if (currency) {
-            if (item.rateBuy)
-              currency.rateBuy = item.rateBuy;
-
-            if (item.rateCross) {
-              currency.rateBuy = item.rateCross;
-              currency.rateSell = item.rateCross;
-            }
-
-            if (item.rateSell)
-              currency.rateSell = item.rateSell;
+            currency.rateBuy = entry.rateCross || entry.rateBuy || currency.rateBuy;
+            currency.rateSell = entry.rateCross || entry.rateSell || currency.rateSell;
           }
 
           return currency;
         })
-        .filter((item) => item);
+        .filter(Boolean);
     },
     selectCurrency(currency) {
       this.selectedCurrency = currency;
@@ -168,10 +172,11 @@ export default {
   }
 
   &__result {
-    h5, h6 {
+
+    h5,
+    h6 {
       @include format-text($font-large-size, $white-color, none, uppercase);
     }
   }
 }
 </style>
-

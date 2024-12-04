@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="information">
+    <div class="information py-4">
       <div class="information__text">
         <p>
           <b>monobank</b> — роздрібний продукт <a href="https://www.universalbank.com.ua" target="_blank">АТ
@@ -18,7 +18,7 @@
               src="../assets/img/google_ifactor.png" alt=""></a>
         </div>
       </div>
-      <div class="information__logo">
+      <div class="information__logo mb-5">
         <img src="../assets/img/mono_iphone.webp" alt="MonoBank Iphone">
       </div>
     </div>
@@ -33,7 +33,6 @@ export default {
 
 <style lang="scss" scoped>
 .container .information {
-  margin-top: 40px;
   @include flexed($justify-content: space-between);
 
   &__text {
@@ -66,7 +65,9 @@ export default {
   }
 
   &__logo {
-    margin-bottom: 50px;
+    @include media-breakpoint-down(lg) {
+      display: none;
+    }
   }
 }
 </style>
