@@ -72,10 +72,11 @@ export default {
         );
         this.currencies = this.mapCurrencies(data);
       } catch (err) {
-        alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        // alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
+        // setTimeout(() => {
+        //   window.location.reload();
+        // }, 2000);
+        console.log(err);
       }
     },
 

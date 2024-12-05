@@ -7,20 +7,33 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const apiToken = process.env.MONO_API_TOKEN;
+let apiToken;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'Вітаємо! API працює успішно.',
     status: 'OK'
   });
 });
 
-app.get('/api/monobank-client-info', async (req, res) => {
+app.post('/api/set-token', (req, res, next) => {
+  const { apiKey } = req.body;
+
+  if (!apiKey) {
+    return next(new Error('Необхідно передати API ключ.'));
+  }
+
+  apiToken = apiKey;
+  res.json({
+    message: 'API ключ успішно встановлено.',
+  });
+});
+
+app.get('/api/monobank-client-info', async (req, res, next) => {
   try {
     const response = await axios.get('https://api.monobank.ua/personal/client-info', {
       headers: {
@@ -30,21 +43,15 @@ app.get('/api/monobank-client-info', async (req, res) => {
 
     res.json(response.data);
   } catch (error) {
-    console.error('Error fetching client info from Monobank:', error);
-    res.status(500).json({
-      message: 'Не вдалося отримати інформацію з Monobank.',
-      error: error.message
-    });
+    next(error);
   }
 });
 
-app.get('/api/monobank-statement', async (req, res) => {
+app.get('/api/monobank-statement', async (req, res, next) => {
   const { accountId, from, to } = req.query;
 
   if (!accountId || !from || !to) {
-    return res.status(400).json({
-      message: 'Необхідно вказати accountId, from і to.',
-    });
+    return next(new Error('Необхідно вказати accountId, from і to.'));
   }
 
   try {
@@ -59,38 +66,36 @@ app.get('/api/monobank-statement', async (req, res) => {
 
     res.json(response.data);
   } catch (error) {
-    console.error('Error fetching statement from Monobank:', error);
-    res.status(500).json({
-      message: 'Не вдалося отримати виписку з Monobank.',
-      error: error.message,
-    });
+    next(error);
   }
 });
 
-app.get('/api/monobank-currency', async (req, res) => {
+app.get('/api/monobank-currency', async (req, res, next) => {
   try {
     const response = await axios.get('https://api.monobank.ua/bank/currency', {
       headers: {
         'X-Token': apiToken,
       },
     });
-    
+
     res.json(response.data);
   } catch (error) {
-    console.error('Error fetching currency info from Monobank:', error);
-    res.status(500).json({
-      message: 'Не вдалося отримати інформацію з Monobank.',
-      error: error.message
-    });
+    next(error);
   }
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Щось пішло не так!',
-    error: err.message 
-  });
+  const message = err.message || 'Щось пішло не так!';
+  console.log('ErrMesageLog: ' + message);
+
+  res
+    .status(err.status || 500)
+    .json({
+      message,
+      error: message,
+    });
+
+  alert(message);
 });
 
 app.listen(PORT, () => {

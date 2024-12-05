@@ -150,10 +150,7 @@ export default {
         this.accounts = response.data.accounts;
         this.jars = response.data.jars;
       } catch (err) {
-        alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        console.log(err);
       }
     },
     async getCardsInfo(card) {
@@ -174,10 +171,7 @@ export default {
           alert("Виписка по даній картці не знайдена");
         }
       } catch (err) {
-        alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        console.log(err);
       }
     },
     getCurrencyName(number) {
