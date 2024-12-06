@@ -50,6 +50,10 @@ export default {
   &__download {
     margin-top: 280px;
 
+    @include media-breakpoint-down(lg) {
+      margin-top: 0;
+    }
+
     h2 {
       @include format-text($font-xlarge-size, $white-color);
     }

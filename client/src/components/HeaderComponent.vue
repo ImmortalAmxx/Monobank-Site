@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand-md navbar-light">
+  <nav class="navbar navbar-expand-lg navbar-light">
     <div class="container container-fluid">
       <img src="../assets/img/monobank-svgrepo.svg" alt="">
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"

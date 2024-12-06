@@ -82,7 +82,7 @@
             Виписка по картках
           </p>
         </div>
-        <form @submit.prevent="getCardsInfo(selectCardData[0].cardId)">
+        <form @submit.prevent="getStatementsInfo(selectCardData[0].cardId)">
           <div class="row g-3">
             <div class="col-6">
               <div class="statement-form__dropdown dropdown">
@@ -108,7 +108,7 @@
       </div>
       <div class="statement-cards" v-if="statements.length > 0">
         <div class="statement-cards__slider">
-          <swiper :slidesPerView="3" :spaceBetween="20" class="mySwiper">
+          <swiper  :spaceBetween="20" :breakpoints="breakpoints">
             <swiper-slide v-for="(statement, index) in statements" :key="index">
               <div class="card p-3">
                 <h3 class="mb-4">Транзакція №: {{ index + 1 }}</h3>
@@ -138,6 +138,20 @@ export default {
       jars: [],
       statements: [],
       selectCardData: [],
+      breakpoints: {
+        576: {
+          slidesPerView: 1,
+          spaceBetween: 10,
+        },
+        768: {
+          slidesPerView: 2,
+          spaceBetween: 15,
+        },
+        992: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+      },
     };
   },
   created() {
@@ -153,7 +167,7 @@ export default {
         console.log(err);
       }
     },
-    async getCardsInfo(card) {
+    async getStatementsInfo(card) {
       try {
         const response = await axios.get(
           `http://localhost:5000/api/monobank-statement`, {
@@ -265,7 +279,7 @@ export default {
       .jars__card {
         background-color: $dark-gray-color;
         box-shadow: $dark-gray-color 0px 5px 15px;
-        border-radius: 8px;
+        border-radius: $border-radius;
 
         @include media-breakpoint-down(sm) {
           margin-bottom: 15px;
@@ -332,7 +346,7 @@ export default {
 
   &-form {
     background: $white-color;
-    border-radius: 8px;
+    border-radius: $border-radius;
     box-shadow: $white-color 0px 5px 15px;
     width: 100%;
     max-width: 500px;
@@ -362,6 +376,7 @@ export default {
 
   .statement-cards {
     margin-top: 20px;
+    overflow: hidden;
   }
 
   #statement {

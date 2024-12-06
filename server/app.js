@@ -42,6 +42,8 @@ app.get('/api/monobank-client-info', async (req, res, next) => {
     });
 
     res.json(response.data);
+    console.log('Information was sent');
+
   } catch (error) {
     next(error);
   }
@@ -49,10 +51,6 @@ app.get('/api/monobank-client-info', async (req, res, next) => {
 
 app.get('/api/monobank-statement', async (req, res, next) => {
   const { accountId, from, to } = req.query;
-
-  if (!accountId || !from || !to) {
-    return next(new Error('Необхідно вказати accountId, from і to.'));
-  }
 
   try {
     const response = await axios.get(
@@ -79,6 +77,8 @@ app.get('/api/monobank-currency', async (req, res, next) => {
     });
 
     res.json(response.data);
+    console.log('Information was sent');
+
   } catch (error) {
     next(error);
   }
@@ -94,8 +94,6 @@ app.use((err, req, res, next) => {
       message,
       error: message,
     });
-
-  alert(message);
 });
 
 app.listen(PORT, () => {

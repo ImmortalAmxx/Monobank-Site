@@ -25,7 +25,7 @@
                 </ul>
               </div>
             </div>
-            <div class="col-4">
+            <div class="col-md-4">
               <button type="submit" class="btn btn-light w-100">
                 Розрахувати
               </button>
@@ -72,10 +72,6 @@ export default {
         );
         this.currencies = this.mapCurrencies(data);
       } catch (err) {
-        // alert("Наразі неможливо дістати інформацію. Натисніть ок для перезавантаження сторінки.");
-        // setTimeout(() => {
-        //   window.location.reload();
-        // }, 2000);
         console.log(err);
       }
     },
@@ -139,7 +135,7 @@ export default {
 
   &__form {
     background: $dark-gray-color;
-    border-radius: 8px;
+    border-radius: $border-radius;
     box-shadow: $dark-gray-color 0px 5px 15px;
     width: 100%;
     max-width: 600px;
