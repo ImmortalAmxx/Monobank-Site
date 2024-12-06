@@ -42,7 +42,6 @@ app.get('/api/monobank-client-info', async (req, res, next) => {
     });
 
     res.json(response.data);
-    console.log('Information was sent');
 
   } catch (error) {
     next(error);
@@ -77,7 +76,6 @@ app.get('/api/monobank-currency', async (req, res, next) => {
     });
 
     res.json(response.data);
-    console.log('Information was sent');
 
   } catch (error) {
     next(error);
@@ -86,7 +84,6 @@ app.get('/api/monobank-currency', async (req, res, next) => {
 
 app.use((err, req, res, next) => {
   const message = err.message || 'Щось пішло не так!';
-  console.log('ErrMesageLog: ' + message);
 
   res
     .status(err.status || 500)
@@ -94,6 +91,8 @@ app.use((err, req, res, next) => {
       message,
       error: message,
     });
+
+    console.error(err);
 });
 
 app.listen(PORT, () => {

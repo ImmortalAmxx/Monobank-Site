@@ -108,7 +108,7 @@
       </div>
       <div class="statement-cards" v-if="statements.length > 0">
         <div class="statement-cards__slider">
-          <swiper  :spaceBetween="20" :breakpoints="breakpoints">
+          <swiper :spaceBetween="20" :breakpoints="breakpoints">
             <swiper-slide v-for="(statement, index) in statements" :key="index">
               <div class="card p-3">
                 <h3 class="mb-4">Транзакція №: {{ index + 1 }}</h3>
@@ -129,6 +129,7 @@
 import axios from 'axios';
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
+import { useAlertsStore } from '@/stores/alerts';
 
 export default {
   components: { Swiper, SwiperSlide },
@@ -154,9 +155,11 @@ export default {
       },
     };
   },
+
   created() {
     this.getClientInfo();
   },
+
   methods: {
     async getClientInfo() {
       try {
@@ -165,8 +168,25 @@ export default {
         this.jars = response.data.jars;
       } catch (err) {
         console.log(err);
+
+        const alertsStore = useAlertsStore();
+
+        switch(err.response.status) {
+          case 429: {
+            alertsStore.setMessage('Забагато запитів, оновіть сторінку через декілька секунд!'); 
+            break;
+          }
+          case 400, 403:  {
+            alertsStore.setMessage('Ви вказали невірний API ключ!'); 
+            this.$router.push('/');
+            break; 
+          }
+        }
+
+        alert(alertsStore.allertMessage);
       }
     },
+
     async getStatementsInfo(card) {
       try {
         const response = await axios.get(
@@ -176,18 +196,37 @@ export default {
             from: Date.now() - (30 * 86400000),
             to: Date.now()
           }
-        }
-        );
+        });
 
         this.statements = response.data;
 
         if (this.statements.length < 1) {
-          alert("Виписка по даній картці не знайдена");
+          const alertsStore = useAlertsStore();
+          alertsStore.setMessage("Виписка по даній картці не знайдена");
+
+          alert(alertsStore.allertMessage);
         }
       } catch (err) {
         console.log(err);
+
+        const alertsStore = useAlertsStore();
+
+        switch(err.response.status) {
+          case 429: {
+            alertsStore.setMessage('Забагато запитів, оновіть сторінку через декілька секунд!'); 
+            break;
+          }
+          case 400, 403:  {
+            alertsStore.setMessage('Ви вказали невірний API ключ!');
+            this.$router.push('/'); 
+            break; 
+          }
+        }
+
+        alert(alertsStore.allertMessage);
       }
     },
+
     getCurrencyName(number) {
       const strings = {
         980: 'UAH',
@@ -197,6 +236,7 @@ export default {
 
       return strings[number];
     },
+
     getNameCardByType(type) {
       const strings = {
         "black": 'Темна',
@@ -207,6 +247,7 @@ export default {
 
       return strings[type];
     },
+
     formatNumber(value) {
       const strValue = value.toString();
       if (strValue.length <= 2) {
@@ -224,12 +265,14 @@ export default {
 
       return value;
     },
+
     selectCard(card) {
       this.selectCardData = [{
         selectId: card,
         cardId: card.id
       }];
     },
+
     getDate(timestamp) {
       const date = new Date(timestamp * 1000);
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
@@ -238,6 +281,7 @@ export default {
   },
 };
 </script>
+
 
 <style lang="scss">
 .account {
